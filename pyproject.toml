@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "leetit"
+version = "0.1.0"
+description = "1337 translator lib"
+authors = ["DomesticMoth"]
+license = "GNU GPLv3"
+readme = "README.md"
+homepage = "https://github.com/DomesticMoth/leetit"
+repository = "https://github.com/DomesticMoth/leetit"
+classifiers = [
+    "Environment :: Console",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"
+]
+include = [
+    "LICENSE",
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
