@@ -15,6 +15,7 @@
     along with leetit.  If not, see <https://www.gnu.org/licenses/>.
 """
 import re
+import copy
 import random
 import string
 
@@ -185,6 +186,8 @@ VOC = __wrap(VOC)
 
 
 def __concat_alphabets(a, b):
+    a = copy.deepcopy(a)
+    b = copy.deepcopy(b)
     for k in b.keys():
         if k in a:
             for e in b[k]:
