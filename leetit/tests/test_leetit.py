@@ -14,14 +14,8 @@
     You should have received a copy of the GNU General Public License
     along with leetit.  If not, see <https://www.gnu.org/licenses/>.
 """
-from leetit import __version__, vocabular, VOC
+from leetit import __version__
 
 
 def test_version():
-    assert __version__ == '0.1.0'
-
-
-def test_vocabular():
-    for key in VOC.keys():
-        for e in VOC[key][1]:
-            pass
+    assert __version__ == '1.0.0'

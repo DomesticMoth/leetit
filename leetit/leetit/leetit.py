@@ -16,12 +16,7 @@
 """
 import re
 import random
-
-# re.IGNORECASE
-#  => (?:\s+|^)
-#  => (?:\s+|$)
-
-#(?:\s+|^)(?:\s+|$)
+import string
 
 
 """
@@ -63,6 +58,11 @@ VOC={
     "PWND":   [r"owned",                                                             ["pwnd",]],
     "PWN":    [r"own",                                                               ["pwn",]],
     "NOOB":   [r"(?:(?:no+b)|(?:newbi*e*))",                                         ["noob","newbie"]],
+    "COOL":   [r"(?:cool)",                                                          ["k1", "k!"]],
+    "YEAH":   [r"(?:yeah)",                                                          ["ya1", "ya!"]],
+    "IM":      [r"(?:i['` ]*a*m)",                                                   ["ya", "i", "i"]],
+    "I":      [r"(?:i)",                                                             ["ya", "i"]],
+    "LOVE":   [r"(?:love)",                                                          ["luv", "love"]],
     "OR":     [r"or",                                                                ["|", "||"]],
     "NO":     [r"(?:(?:no)|(?:not)|(?:false)|(?:nope))",                             ["!", "nope"]],
     "AND":    [r"and",                                                               ["&", "&&"]],
@@ -81,28 +81,177 @@ VOC={
     "KK":     [r"[o0][kc]",                                                          ["kk",]],
     "U":      [r"you",                                                               ["u",]],
     "Q":      [r"q(?:ue){2}",                                                        ["Q",]],
+    "TEH":    [r"q(?:the){2}",                                                       ["teh", "tex", "the", "the", "the"]],
 }
 
-for key in VOC.keys():
-    wrapper = r"\b"
-    VOC[key][0] = re.compile(wrapper+VOC[key][0]+wrapper, re.IGNORECASE)
+MORPHEMES = (
+    (re.compile(r"(?:(?:\Bcker\b)|(?:\Bker\b))"), ["xxor", "xzor", "zzor"]),
+    (re.compile(r"(?:(?:\Bckers\b)|(?:\Bkers\b))"), ["xxorz", "xzorz", "zzorz"]),
+    (re.compile(r"(?:(?:\Ber\b)|(?:\Bor\b))"), ["xor", "zor", "xor", "zor", "xorz", "zorz"]),
+    (re.compile(r"(?:(?:\Bers\b)|(?:\Bors\b))"), ["xorz", "zorz"]),
+    (re.compile(r"(?:(?:and)|(?:end)|(?:anned)|(?:ant)|(?:ent))"), ["&", "7"]),
+    (re.compile(r"(?:(?:ait)|(?:ate))"), ["8", "*"]),
+    (re.compile(r"(?:\Bing\b)"), ["ping"]),
+    (re.compile(r"(?:\Bent\b)"), ["10", "wnt", "wnt", "ent", "ent", "ent", "ent"]),
+    (re.compile(r"(?:\Bist\b)"), ["izd", "ist", "ist", "ist", "ist"]),
+    (re.compile(r"(?:\Bian\b)"), ["yan", "ian", "ian"]),
+    (re.compile(r"(?:\Bism\b)"), ["izm", "ism"]),
+    (re.compile(r"(?:(?:\Bes\b)|(?:\Bess\b))"), ["ez"]),
+    (re.compile(r"(?:\Bth\b)"), ["z", "th", "th"]),
+    (re.compile(r"(?:\Bs\b)"), ["z", "s"]),
+    (re.compile(r"(?:\Bed\b)"), ["t", "et", "et", "ed", "ed"]),
+    (re.compile(r"(?:\Be\b)"), ["e", "e", "e", ""]),
+    (re.compile(r"cks"), ["xx"]),
+    (re.compile(r"(?:(?:ks)|(?:cs)|(?:x))"), ["ks", "cs", "x", "x", "x"]),
+    (re.compile(r"(?:(?:u)|(?:oo))"), ["u", "oo"]),
+)
+
+ALPHABET_NOMBERS = {
+    "a": ["4"],
+    "b": ["8", "13"],
+    "e": ["3"],
+    "g": ["9", "6"],
+    "i": ["1"],
+    "l": ["1", "2", "7"],
+    "o": ["0"],
+    "p": ["9"],
+    "q": ["2"],
+    "r": ["9", "7", "2", "12", "3"],
+    "s": ["5", "2"],
+    "t": ["7"],
+    "y": ["j"],
+    "z": ["2"],
+}
+
+ALPHABET_ASCII = {
+    "a": ["/\\", "@", "/-\\", "^", "(L"],
+    "b": ["I3", "|3", "!3", "(3", "/3", ")3", "j3"],
+    "c": ["[", "<", "("],
+    "d": [")", "|)", "(|", "[)", "I>", "|>", "?", "T)", "I7", "c1", "|}", "|]"],
+    "e": ["&", "[-", "|=-"],
+    "f": ["|=", "|#", "ph", "/="],
+    "g": ["&", "(_+", "C-", "gee", "(?", "[,", "(,", "(."],
+    "h": ["#", "/-/", "\\-\\", "[-]", "]-[", ")-(", "(-)", ":-:", "|~|", "}{", "!-!", "1-1", "!-1", "1-!", "I-I"],
+    "i": ["|", "!", "eye", "3y3"],
+    "j": [",_|", "_|", "._|", "_]", "]"],
+    "k": [">|", "|<", "1<", "|c"],
+    "l": ["|", "|_"],
+    "m": ["/\\/\\", "/V\\", "[V]", "|\\/|", "^^", "<\\/>", "{v}", "(v)", "|\\|\\", "nn", "11"],
+    "n": ["^/", "|\\|", "/\\/", "[\\]", "<\\>", "{\\}", "/V", "^"],
+    "o": ["()", "ch", "[]", "p", "<>"],
+    "p": ["|*", "|o", "?", "|^", "|>", "[]D", "|7"],
+    "r": ["I2", "|~", "|?", "/2", "|^", "lz", "[z", ".-", "|2", "|-"],
+    "s": ["$", "z", "ehs"],
+    "t": ["+", "-|-", "']['", "~|~"],
+    "u": ["(_)", "|_|", "v", "L|"],
+    "v": ["\\/", "|/", "\\|"],
+    "w": ["\\/\\/", "vv", "\\N", "'//", "\\^/", "(n)", "\\v/", "\\X/", "\\|/", "\\_|_/", "uu", "2u"],
+    "x": ["><", "}{", "ecks", "*", "?", "}{", ")(", "]["],
+    "y": ["j", "\\//"],
+    "z": ["7_", "-/_", "%", ">_", "s"],
+}
+
+ALPHABET_UNICODE_ONLY = {
+    "a": ["Д"],
+    "b": ["ß"],
+    "c": ["¢", "©"],
+    "e": ["£", "€", "ё"],
+    "f": ["ƒ"],
+    "n": ["И"],
+    "p": ["|°"],
+    "r": ["®", "Я"],
+    "s": ["§"],
+    "t": ["†"],
+    "u": ["µ"],
+    "w": ["Ш"],
+    "x": ["Ж"],
+    "y": ["Ч"],
+}
+
+ALPHABET_UNICODE = {}
 
 
-def clear(text: str) -> str:
-    pass
+__USAGE_LETTERS = "abcdefghijklmno"
 
 
-def vocabular(text: str, seed: int = 1337) -> str:
-    pass # TODO
+def __wrap(a):
+    for key in a.keys():
+        wrapper = r"\b"
+        a[key][0] = re.compile(wrapper+a[key][0]+wrapper, re.IGNORECASE)
+    return a
+
+
+VOC = __wrap(VOC)
+
+
+def __concat_alphabets(a, b):
+    for k in b.keys():
+        if k in a:
+            for e in b[k]:
+                a[k].append(e)
+        else:
+            a[k] = b[k]
+    return a
+
+
+ALPHABET_ASCII = __concat_alphabets(ALPHABET_ASCII, ALPHABET_NOMBERS)
+
+ALPHABET_UNICODE = __concat_alphabets(ALPHABET_UNICODE_ONLY, ALPHABET_ASCII)
+
+
+def acronims(text: str, seed: int = 1337) -> str:
+    random.seed(seed)
+    for k in VOC.keys():
+        regexp = VOC[k][0]
+        subs = VOC[k][1]
+        fragments = regexp.split(text)
+        if len(fragments) > 0:
+            text = ""
+            for i, fragment in enumerate(fragments):
+                text+=fragment
+                if i < len(fragments)-1:  # If not last
+                    text+=random.choice(subs)
+    return text
 
 
 def morphology(text: str, seed: int = 1337) -> str:
-    pass # TODO
+    random.seed(seed)
+    for m in MORPHEMES:
+        regexp = m[0]
+        subs = m[1]
+        fragments = regexp.split(text)
+        if len(fragments) > 0:
+            text = ""
+            for i, fragment in enumerate(fragments):
+                text+=fragment
+                if i < len(fragments)-1:  # If not last
+                    text+=random.choice(subs)
+    return text
 
 
-def substitution(text: str, unicode: bool = False, seed: int = 1337) -> str:
-    pass # TODO
+def randomcase(text: str) -> str:
+    ret = ""
+    for i in range(len(text)):
+        if random.choice([True, False]):
+            ret += text[i].upper()
+        else:
+            ret += text[i].lower()
+    return ret
 
 
-def convert(text: str, unicode: bool = False, seed: int = 1337) -> str:
-    return substitution(morphology(vocabular(text, seed), seed), unicode, seed)
+def substitution(text: str, seed: int = 1337, percent:int = 50, alphabet = ALPHABET_ASCII, chars = string.ascii_lowercase) -> str:
+    random.seed(seed)
+    ret = ""
+    for i in range(len(text)):
+        if text[i] in chars and text[i] in alphabet:
+            if random.randint(0, 100) <= percent:
+                ret += random.choice(alphabet[text[i]])
+            else:
+                ret += text[i]
+        else:
+            ret += text[i]
+    return randomcase(ret)
+
+
+def leet(text: str, seed: int = 1337, percent:int = 50, alphabet = ALPHABET_ASCII, chars = string.ascii_lowercase) -> str:
+    return substitution(morphology(acronims(text, seed), seed), seed, percent, alphabet, chars)
