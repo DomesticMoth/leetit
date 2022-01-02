@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "leetit"
-version = "0.1.0"
+version = "3.1.3373"
 description = "1337 translator lib"
 authors = ["DomesticMoth"]
 license = "GNU GPLv3"
