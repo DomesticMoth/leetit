@@ -22,14 +22,14 @@ First you need to replace words and phrases with slang acronyms like "nice one" 
 import leetit
 
 print(leetit.acronyms("yeah, easy"))
-print(leetit.acronyms("yeah, easy"), seed=12345)
+print(leetit.acronyms("yeah, easy", seed=12345))
 ```
 Secondly, you need to change the morphology of words, for example, replacing the suffixes **-er** and **-or** with **-xor** or **-zor**. To do this, the leetit library provides the `morphology` function.  
 ```Py
 import leetit
 
 print(leetit.morphology("xacker"))
-print(leetit.morphology("xacker"), seed=12345)
+print(leetit.morphology("xacker", seed=12345))
 ```
 Thirdly, you need to replace all or some of the characters with others similar to them in various ways, for example, **e** can be replaced with **3** or **&**.  To do this, the `substitution` function is provided. In addition to text, this function can also accept the following parameters:  
 1) The "seed" parameter accepts the seed for the rng.
@@ -51,11 +51,11 @@ You can also compose your alphabets.
 import leetit
 
 print(leetit.substitution("To be, or not to be, that is the question"))
-print(leetit.substitution("To be, or not to be, that is the question"), seed=12345)
-print(leetit.substitution("To be, or not to be, that is the question"), percent=100, alphabet=leetit.ALPHABET_NUMBERS)
-print(leetit.substitution("To be, or not to be, that is the question"), percent=100, alphabet=leetit.ALPHABET_ASCII)
-print(leetit.substitution("To be, or not to be, that is the question"), percent=100, alphabet=leetit.ALPHABET_UNICODE_ONLY)
-print(leetit.substitution("To be, or not to be, that is the question"), percent=100, alphabet=leetit.ALPHABET_UNICODE)
+print(leetit.substitution("To be, or not to be, that is the question", seed=12345))
+print(leetit.substitution("To be, or not to be, that is the question", percent=100, alphabet=leetit.ALPHABET_NUMBERS))
+print(leetit.substitution("To be, or not to be, that is the question", percent=100, alphabet=leetit.ALPHABET_ASCII))
+print(leetit.substitution("To be, or not to be, that is the question", percent=100, alphabet=leetit.ALPHABET_UNICODE_ONLY))
+print(leetit.substitution("To be, or not to be, that is the question", percent=100, alphabet=leetit.ALPHABET_UNICODE))
 
 MY_ALPHABET = {
   "e": ["eeeeeeee"],
