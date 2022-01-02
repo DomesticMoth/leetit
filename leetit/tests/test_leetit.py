@@ -18,4 +18,4 @@ from leetit import __version__
 
 
 def test_version():
-    assert __version__ == '3.1.3373'
+    assert __version__ == '31.3.373'

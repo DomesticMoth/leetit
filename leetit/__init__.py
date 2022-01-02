@@ -16,4 +16,4 @@
 """
 from .leetit import *
 
-__version__ = '3.1.3373'
+__version__ = '31.3.373'

@@ -106,7 +106,7 @@ MORPHEMES = (
     (re.compile(r"(?:(?:u)|(?:oo))"), ["u", "oo"]),
 )
 
-ALPHABET_NOMBERS = {
+ALPHABET_NUMBERS = {
     "a": ["4"],
     "b": ["8", "13"],
     "e": ["3"],
@@ -194,12 +194,12 @@ def __concat_alphabets(a, b):
     return a
 
 
-ALPHABET_ASCII = __concat_alphabets(ALPHABET_ASCII, ALPHABET_NOMBERS)
+ALPHABET_ASCII = __concat_alphabets(ALPHABET_ASCII, ALPHABET_NUMBERS)
 
 ALPHABET_UNICODE = __concat_alphabets(ALPHABET_UNICODE_ONLY, ALPHABET_ASCII)
 
 
-def acronims(text: str, seed: int = 1337) -> str:
+def acronyms(text: str, seed: int = 1337) -> str:
     random.seed(seed)
     for k in VOC.keys():
         regexp = VOC[k][0]
@@ -242,6 +242,8 @@ def randomcase(text: str) -> str:
 def substitution(text: str, seed: int = 1337, percent:int = 50, alphabet = ALPHABET_ASCII, chars = string.ascii_lowercase) -> str:
     random.seed(seed)
     ret = ""
+    chars = chars.lower()
+    text = text.lower()
     for i in range(len(text)):
         if text[i] in chars and text[i] in alphabet:
             if random.randint(0, 100) <= percent:
@@ -254,4 +256,4 @@ def substitution(text: str, seed: int = 1337, percent:int = 50, alphabet = ALPHA
 
 
 def leet(text: str, seed: int = 1337, percent:int = 50, alphabet = ALPHABET_ASCII, chars = string.ascii_lowercase) -> str:
-    return substitution(morphology(acronims(text, seed), seed), seed, percent, alphabet, chars)
+    return substitution(morphology(acronyms(text, seed), seed), seed, percent, alphabet, chars)
