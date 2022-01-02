@@ -62,7 +62,7 @@ MY_ALPHABET = {
   "o": ["oooooooo"],
 }
 
-print(leetit.substitution("To be, or not to be, that is the question"), percent=100, alphabet=MY_ALPHABET)
+print(leetit.substitution("To be, or not to be, that is the question", percent=100, alphabet=MY_ALPHABET))
 ```
 
 And finally, the leetit library provides a `leet` function that performs all three transformations on the text in turn:  
