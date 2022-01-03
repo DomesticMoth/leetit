@@ -50,19 +50,21 @@ You can also compose your alphabets.
 ```Py
 import leetit
 
-print(leetit.substitution("To be, or not to be, that is the question"))
-print(leetit.substitution("To be, or not to be, that is the question", seed=12345))
-print(leetit.substitution("To be, or not to be, that is the question", percent=100, alphabet=leetit.ALPHABET_NUMBERS))
-print(leetit.substitution("To be, or not to be, that is the question", percent=100, alphabet=leetit.ALPHABET_ASCII))
-print(leetit.substitution("To be, or not to be, that is the question", percent=100, alphabet=leetit.ALPHABET_UNICODE_ONLY))
-print(leetit.substitution("To be, or not to be, that is the question", percent=100, alphabet=leetit.ALPHABET_UNICODE))
+question = "To be, or not to be, that is the question"
+
+print(leetit.substitution())
+print(leetit.substitution(question, seed=12345))
+print(leetit.substitution(question, percent=100, alphabet=leetit.ALPHABET_NUMBERS))
+print(leetit.substitution(question, percent=100, alphabet=leetit.ALPHABET_ASCII))
+print(leetit.substitution(question, percent=100, alphabet=leetit.ALPHABET_UNICODE_ONLY))
+print(leetit.substitution(question, percent=100, alphabet=leetit.ALPHABET_UNICODE))
 
 MY_ALPHABET = {
   "e": ["eeeeeeee"],
   "o": ["oooooooo"],
 }
 
-print(leetit.substitution("To be, or not to be, that is the question", percent=100, alphabet=MY_ALPHABET))
+print(leetit.substitution(question, percent=100, alphabet=MY_ALPHABET))
 ```
 
 And finally, the leetit library provides a `leet` function that performs all three transformations on the text in turn:  
